@@ -1,10 +1,14 @@
+
 on:
-  pull_request_target:
+  push:
     branches:
       - main
-    types:
-      - closed
-
+  pull_request:
+    branches:
+      - main
+    types: [opened]
+    merged: true
+    
 jobs:
   if_merged:
     if: github.event.pull_request.merged == true
@@ -15,17 +19,6 @@ jobs:
     - name: Send mail
       uses: dawidd6/action-send-mail@v3
       with:
-        # Specify connection via URL (replaces server_address, server_port, secure,
-        # username and password)
-        #
-        # Format:
-        #
-        #  * smtp://user:password@server:port
-        #  * smtp+starttls://user:password@server:port
-        #onnection_url: ${{secrets.MAIL_CONNECTION}}
-        # Required mail server address if not connection_url:
-        server_address: smtp.gmail.com
-        # Server port, default 25:
         server_port: 465
         # Optional whether this connection use TLS (default is true if server_port is 465)
         secure: true
