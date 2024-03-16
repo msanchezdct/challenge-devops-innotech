@@ -9,6 +9,9 @@ on:
       - main
     types: [opened]
     merged: true
+
+
+  workflow_dispatch:
     
 jobs:
   if_merged:
