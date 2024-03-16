@@ -1,0 +1,68 @@
+name: test
+on:
+  pull_request:
+    branches:
+    - main
+jobs:
+  my_job:
+    name: deploy to staging
+    runs-on: ubuntu-22.04
+    steps:
+      - name: ls
+        run: ls -l
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: 16
+      - name: build
+        run: npm ci
+      - name: Test
+        run: npm test
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+          
+      - name: SonarQube Quality Gate check
+        id: sonarqube-quality-gate-check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        # Force to fail step after specific time.
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }} #OPTIONAL
+
+      - name: "Example show SonarQube Quality Gate Status value"
+        run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
+      - name: Approve Pull Request
+        uses: juliangruber/approve-pull-request-action@v2
+        with:
+          github-token: ${{ github.token }}
+          number: ${{ github.event.number }}  
+      - name: Jira Login
+        # You may pin to the exact commit or the version.
+        # uses: atlassian/gajira-login@ca13f8850ea309cf44a6e4e0c49d9aa48ac3ca4c
+        uses: atlassian/gajira-login@v3
+        env:
+          JIRA_BASE_URL: ${{ vars.JIRA_BASE_URL }}
+          JIRA_USER_EMAIL: ${{ vars.JIRA_USER_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+      - name: Create Jira issue
+        id: create
+        uses: atlassian/gajira-create@v3
+        with:
+          project: IDG
+          issuetype: "Build"
+          summary: "Build completed for ${{ github.repository }}"
+          description: "PR created by ${{ github.actor }}"
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          
+      
