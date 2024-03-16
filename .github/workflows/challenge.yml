@@ -56,8 +56,8 @@ jobs:
         uses: atlassian/gajira-create@v3
         with:
           project: IDG
-          issuetype: Build
-          summary: Build completed for ${{ github.repository }}
-          description: PR created by ${{ github.actor }}
+          issuetype: "Build"
+          summary: "Build completed for ${{ github.repository }}"
+          description: "PR created by ${{ github.actor }}"
           
       
