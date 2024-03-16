@@ -1,8 +1,9 @@
+name: CHALLENGE
 
 on:
   push:
     branches:
-      - main
+    - main
   pull_request:
     branches:
       - main
