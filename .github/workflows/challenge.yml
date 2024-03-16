@@ -59,5 +59,9 @@ jobs:
           issuetype: "Build"
           summary: "Build completed for ${{ github.repository }}"
           description: "PR created by ${{ github.actor }}"
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           
       
