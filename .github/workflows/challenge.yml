@@ -60,6 +60,5 @@ jobs:
           summary: Build completed for ${{ github.repository }}
           description: |
             PR created by ${{ github.actor }}
-          fields: '{"test_field": "test1"}'
           
       
