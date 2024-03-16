@@ -1,4 +1,4 @@
-name: Github Pages Deploy test
+name: Github Pages Deploy test1
 
 on:
    merge_group:
