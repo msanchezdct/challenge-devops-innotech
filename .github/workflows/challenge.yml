@@ -58,7 +58,6 @@ jobs:
           project: IDG
           issuetype: Task
           summary: Build completed for ${{ github.repository }}
-          description: |
-            PR created by ${{ github.actor }}
+          description: PR created by ${{ github.actor }}
           
       
